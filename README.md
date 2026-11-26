@@ -27,7 +27,7 @@
 
 Весь тренажер собран в один автономный HTML-файл, поэтому его можно сохранить на устройство и заниматься офлайн:
 
-1. Скачайте файл `SuomenVerbit.html` [прямая ссылка на скачивание](https://github.com/max-roz/suommen-verbit/releases/download/V1.0/index.html) (нажмите правой кнопкой мыши → *«Сохранить ссылку как...»*) или скачайте [ZIP-архив репозитория](https://github.com/max-roz/suomen-verbit/archive/refs/heads/main.zip) и распакуйте его.
+1. Скачайте файл `SuomenVerbit.html` [прямая ссылка на скачивание](https://github.com/max-roz/suomen-verbit/releases/download/V1.0/index.html) (нажмите правой кнопкой мыши → *«Сохранить ссылку как...»*) или скачайте [ZIP-архив репозитория](https://github.com/max-roz/suomen-verbit/archive/refs/heads/main.zip) и распакуйте его.
 2. Откройте скачанный файл двойным кликом — он запустится в вашем браузере.
 
 
