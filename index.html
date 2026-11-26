@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=overlays-content">
+<meta name="theme-color" content="#1e3c72">
+<title>Suomen verbit · Типы 1–5</title>
+<style>
+  :root {
+    --primary: #2a5298; --primary-dark: #1e3c72; --primary-light: #e8eef7;
+    --bg-grad-start: #1e3c72; --bg-grad-end: #2a5298;
+    --panel-bg: #ffffff; --surface-bg: #f7f9fc; --surface-alt: #f0f4fa; --surface-prog: #f4f7fc;
+    --border-color: #eef2f7; --border-input: #d0dbe8; --border-tab: #dbe5f4;
+    --text-main: #222222; --text-muted: #666666; --text-subtle: #888888; --text-body: #334155;
+    --tag-bg: #e3f0ff; --tag-text: #1e5aa8;
+    --success-bg: #e6f7ec; --success-text: #1a7f3c; --success-border: #7ed3a0;
+    --error-bg: #fdecec; --error-text: #b32d2d; --error-border: #f5a3a3;
+    --btn-h: 42px;
+  }
+  body.dark {
+    --primary: #4c82f7; --primary-dark: #93c5fd; --primary-light: #1e293b;
+    --bg-grad-start: #090d16; --bg-grad-end: #111827;
+    --panel-bg: #161f30; --surface-bg: #1e293b; --surface-alt: #263349; --surface-prog: #1e293b;
+    --border-color: #2e3c54; --border-input: #334155; --border-tab: #334155;
+    --text-main: #f1f5f9; --text-muted: #94a3b8; --text-subtle: #64748b; --text-body: #cbd5e1;
+    --tag-bg: #1e3a5f; --tag-text: #7dd3fc;
+    --success-bg: #112e21; --success-text: #4ade80; --success-border: #166534;
+    --error-bg: #331619; --error-text: #f87171; --error-border: #7f1d1d;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100dvh; margin: 0; padding: 0; overflow: hidden; }
+  body {
+    font-family: -apple-system, 'Segoe UI', Roboto, system-ui, sans-serif;
+    background: linear-gradient(135deg, var(--bg-grad-start) 0%, var(--bg-grad-end) 100%);
+    padding: 6px; display: flex; flex-direction: column; align-items: center; color: var(--text-main);
+  }
+  .wrap { max-width: 540px; width: 100%; height: 100%; display: flex; flex-direction: column; gap: 5px; }
+  .panel { background: var(--panel-bg); border-radius: 18px; box-shadow: 0 10px 32px rgba(0,0,0,0.22); padding: 12px 14px; width: 100%; }
+  .panel-top { flex-shrink: 0; padding-bottom: 10px; }
+  .panel-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+  .icon { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .icon-md { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .icon-lg { width: 30px; height: 30px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; }
+  .section-head { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+  .link-btn { background: none; border: none; color: var(--primary); font-size: 11.5px; font-weight: 600; cursor: pointer; text-decoration: underline; padding: 0; height: auto; }
+  .lessons-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 8px; }
+  .chip { height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 9px; font-size: 13px; font-weight: 700; background: var(--surface-alt); color: var(--text-muted); cursor: pointer; user-select: none; }
+  .chip.active { background: var(--primary); color: #fff; }
+  .global-progress { display: flex; justify-content: space-between; align-items: center; background: var(--surface-prog); padding: 6px 10px; border-radius: 9px; font-size: 12px; color: var(--text-body); margin-bottom: 8px; }
+  .controls-stack { display: flex; flex-direction: column; gap: 6px; }
+  .modes-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .settings-row { display: grid; grid-template-columns: 1.4fr 0.9fr 1fr 1fr; gap: 5px; }
+  .tab-btn, .mini-btn { height: var(--btn-h); border-radius: 10px; font-weight: 700; font-size: 12.5px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 0 4px; }
+  .tab-btn { border: 1.5px solid var(--border-tab); background: var(--surface-alt); color: var(--primary); }
+  .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .mini-btn { border: 1.5px solid var(--primary); background: var(--panel-bg); color: var(--primary); }
+  .mini-btn.muted { border-color: var(--border-input); color: var(--text-subtle); background: var(--surface-bg); }
+  .progress { display: none; height: 5px; background: var(--primary-light); border-radius: 4px; overflow: hidden; margin-bottom: 6px; flex-shrink: 0; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), #4a7fd4); width: 0%; transition: width 0.35s ease; }
+  .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; min-height: 30px; gap: 6px; }
+  .tag-group { display: flex; align-items: center; gap: 5px; }
+  .tag { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 5px 10px; border-radius: 20px; background: var(--tag-bg); color: var(--tag-text); white-space: nowrap; }
+  .tag-neg { background: var(--error-bg); color: var(--error-text); }
+  .btn-speak { height: 34px; width: 40px; display: inline-flex; align-items: center; justify-content: center; background: var(--panel-bg); border: 1.5px solid var(--primary); color: var(--primary); padding: 0; border-radius: 9px; cursor: pointer; }
+  .btn-speak:disabled { opacity: 0.55; cursor: default; }
+  .umlauts { display: flex; gap: 5px; }
+  .umlaut-btn { height: 34px; width: 34px; font-size: 15px; font-weight: 700; background: var(--primary-light); color: var(--primary-dark); border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; }
+  .word-box { text-align: center; padding: 12px 10px; background: var(--surface-bg); border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 7px; display: flex; flex-direction: column; justify-content: center; min-height: 64px; }
+  .word-box.fixed-card { min-height: 118px; }
+  .word-main { font-size: 19px; font-weight: 700; color: var(--primary-dark); margin: 0; line-height: 1.35; }
+  .word-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .word-trans { font-size: 16px; font-weight: 500; color: var(--text-main); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-input); line-height: 1.35; }
+  .blank-slot { display: inline-block; min-width: 72px; border-bottom: 2px solid var(--primary); color: var(--primary); padding: 0 4px; }
+  button { font-family: inherit; border: none; cursor: pointer; }
+  .buttons { display: flex; gap: 8px; margin-top: 8px; }
+  .btn-primary, .btn-success, .btn-wrong, .btn-secondary { height: var(--btn-h); flex: 1; border-radius: 11px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-align: center; gap: 6px; padding: 0 8px; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-success { background: var(--success-text); color: #fff; }
+  .btn-wrong { background: var(--error-text); color: #fff; }
+  .btn-secondary { background: var(--primary-light); color: var(--primary); }
+  .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .opt-btn { min-height: var(--btn-h); width: 100%; padding: 8px 10px; font-size: 14px; font-weight: 600; text-align: center; background: var(--panel-bg); border: 2px solid var(--border-input); color: var(--text-main); border-radius: 11px; }
+  .opt-btn.correct { background: var(--success-bg); color: var(--success-text); border-color: var(--success-border); }
+  .opt-btn.wrong { background: var(--error-bg); color: var(--error-text); border-color: var(--error-border); }
+  .answer-input { height: 38px; width: 100%; padding: 0 12px; font-size: 16px; border: 2px solid var(--border-input); background: var(--panel-bg); color: var(--text-main); border-radius: 11px; outline: none; text-align: center; }
+  .feedback-box { margin-top: 8px; padding: 8px 12px; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; }
+  .feedback-box.correct { background: var(--success-bg); color: var(--success-text); border: 1.5px solid var(--success-border); }
+  .feedback-box.wrong { background: var(--error-bg); color: var(--error-text); border: 1.5px solid var(--error-border); }
+  .fb-row { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .mistakes-list { text-align: left; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-input); font-size: 12.5px; }
+  .mistakes-list div { padding: 2px 0; color: var(--text-body); }
+  .mistakes-list b { color: var(--error-text); }
+  .stats { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; font-weight: 600; }
+  .err-stat { color: var(--error-text); }
+  .footer-bar { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; color: var(--text-subtle); font-size: 11.5px; }
+  .help-modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: none; align-items: center; justify-content: center; padding: 12px; z-index: 999; }
+  .help-modal.open { display: flex; }
+  .help-box { background: var(--panel-bg); border-radius: 18px; padding: 14px 14px 12px; width: 100%; max-width: 480px; max-height: 88dvh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.3); font-size: 12.5px; line-height: 1.45; color: var(--text-body); }
+  .help-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .help-head h2 { margin: 0; font-size: 16px; color: var(--primary-dark); }
+  .help-close { background: var(--surface-alt); color: var(--primary); width: 30px; height: 30px; border-radius: 8px; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .help-body { overflow-y: auto; padding-right: 4px; margin-bottom: 10px; }
+  .help-body h3 { font-size: 13px; color: var(--primary-dark); margin: 10px 0 4px; }
+  .help-body h3:first-child { margin-top: 0; }
+  .rule-card { background: var(--surface-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; }
+  .rule-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 6px 0; }
+  .rule-table th, .rule-table td { border: 1px solid var(--border-input); padding: 4px 6px; text-align: left; }
+  .rule-table th { background: var(--surface-alt); color: var(--primary-dark); }
+  #gameArea { display: flex; flex-direction: column; flex: none; }
+  .stats, .footer-bar { flex-shrink: 0; }
+  @media (min-width: 640px) {
+    .wrap { max-width: 960px; flex-direction: row; align-items: stretch; }
+    .panel-top { width: 45%; overflow-y: auto; }
+    .panel-main { width: 55%; overflow-y: auto; padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel panel-top">
+    <div class="section-head">
+      <span>Типы глаголов:</span>
+      <div>
+        <button class="link-btn" onclick="selectAll(true)">Все</button> ·
+        <button class="link-btn" onclick="selectAll(false)">Сброс</button>
+      </div>
+    </div>
+    <div class="lessons-grid" id="lessonsContainer"></div>
+    <div class="global-progress">
+      <span id="globalStatText">Освоено: 0 из 0</span>
+      <button class="link-btn" style="color:var(--error-text)" onclick="clearProgress()">Сбросить прогресс</button>
+    </div>
+    <div class="controls-stack">
+      <div class="modes-row" id="modesBar"></div>
+      <div class="settings-row">
+        <button class="mini-btn" id="dirBtn" onclick="toggleDirection()">Инф → Форма</button>
+        <button class="mini-btn" id="polBtn" onclick="togglePolarity()">+ / −</button>
+        <button class="mini-btn" id="muteBtn" onclick="toggleMute()"></button>
+        <button class="mini-btn" id="sizeBtn" onclick="toggleRoundSize()">10 форм</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-main">
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div id="gameArea"></div>
+    <div class="stats">
+      <span id="progressText"></span>
+      <span id="errorsText" class="err-stat"></span>
+      <span id="learnedText"></span>
+    </div>
+    <div class="footer-bar">
+      <span>Спряжение глаголов · Типы 1–5</span>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button type="button" class="link-btn" onclick="toggleModal('rulesModal', true)"><b>Правила</b></button>
+        <span>·</span>
+        <button type="button" class="link-btn" id="themeBtn" onclick="toggleTheme()">Тёмная тема</button>
+        <span>·</span>
+        <button type="button" class="link-btn" onclick="toggleModal('helpModal', true)">Справка</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="help-modal" id="rulesModal" onclick="if(event.target===this)toggleModal('rulesModal',false)">
+  <div class="help-box">
+    <div class="help-head">
+      <h2>Правила спряжения (Preesens)</h2>
+      <button type="button" class="help-close" onclick="toggleModal('rulesModal',false)">×</button>
+    </div>
+    <div class="help-body">
+      <h3>Личные окончания (утверждение и отрицание)</h3>
+      <table class="rule-table">
+        <tr><th>Лицо</th><th>Утверждение</th><th>Пример (puhua)</th><th>Отрицание</th></tr>
+        <tr><td>minä (я)</td><td>основа + <b>-n</b></td><td>puhu<b>n</b></td><td><b>en</b> puhu</td></tr>
+        <tr><td>sinä (ты)</td><td>основа + <b>-t</b></td><td>puhu<b>t</b></td><td><b>et</b> puhu</td></tr>
+        <tr><td>hän / se (он/а)</td><td><b>удвоение гласной*</b></td><td>puhu<b>u</b></td><td><b>ei</b> puhu</td></tr>
+        <tr><td>me (мы)</td><td>основа + <b>-mme</b></td><td>puhu<b>mme</b></td><td><b>emme</b> puhu</td></tr>
+        <tr><td>te (вы)</td><td>основа + <b>-tte</b></td><td>puhu<b>tte</b></td><td><b>ette</b> puhu</td></tr>
+        <tr><td>he / ne (они)</td><td>основа + <b>-vat / -vät</b></td><td>puhu<b>vat</b></td><td><b>eivät</b> puhu</td></tr>
+      </table>
+      <p style="margin:4px 0 8px;">*В 3-м лице ед. числа (<b>hän</b>) конечная гласная удваивается, если до этого она была одна. В отрицании для всех лиц используется основа 1-го лица без окончания <b>-n</b>.</p>
+
+      <h3>Как определить тип глагола и найти основу</h3>
+      <div class="rule-card"><b>Тип 1 (-aa, -ää, -oa, -öä, -ua, -yä, -ea, -eä):</b><br>Убираем последнюю гласную: <i>puhu<s>a</s> → puhu-</i>.<br>• Прямое чередование K-P-T: в 1-м и 2-м лице (minä, sinä, me, te) и в отрицании основа <b>слабая</b>, в 3-м лице (hän, he) — <b>сильная</b>: <i>lukea → minä luen, hän lukee, en lue</i>.</div>
+      <div class="rule-card"><b>Тип 2 (-da / -dä):</b><br>Убираем <i>-da/-dä</i>: <i>syö<s>dä</s> → syö-</i>. В форме <i>hän</i> гласная <b>не удваивается</b>: <i>hän syö, hän juo</i>.<br>• Исключения: <i>tehdä → teen, tekee</i>; <i>nähdä → näen, näkee</i>.</div>
+      <div class="rule-card"><b>Тип 3 (-lla/-llä, -nna/-nnä, -rra/-rrä, -sta/-stä):</b><br>Убираем 2 последние буквы и добавляем <b>-e-</b>: <i>tul<s>la</s> → tule-</i>, <i>nous<s>ta</s> → nouse-</i>.<br>• Обратное чередование K-P-T (в инфинитиве слабая, в спряжении сильная во всех лицах): <i>ajatella → ajattelen, ajattelee</i>.</div>
+      <div class="rule-card"><b>Тип 4 (-ata/-ätä, -ota/-ötä, -uta/-ytä):</b><br>Убираем <b>-t-</b> (остается гласная + <i>-a/-ä</i>): <i>halu<s>t</s>a → halua-</i>. В форме <i>hän</i> на конце две гласные: <i>hän haluaa</i> (но <i>pelata → hän pelaa</i>, т.к. уже две <i>a</i>).<br>• Обратное чередование K-P-T (в инфинитиве слабая, в спряжении сильная): <i>tavata → tapaan, tapaa</i>.</div>
+      <div class="rule-card"><b>Тип 5 (-ita / -itä):</b><br>Убираем <b>-ta/-tä</b> и добавляем <b>-tse-</b> ко всем лицам: <i>tarvi<s>ta</s> → tarvitse-</i>.<br>• Формы: <i>tarvitsen, tarvitset, tarvitsee, tarvitsemme, tarvitsette, tarvitsevat</i>. Отрицание: <i>en tarvitse</i>.</div>
+
+      <h3>Основные чередования согласных (K-P-T)</h3>
+      <table class="rule-table">
+        <tr><th>Сильная основа</th><th>Слабая основа</th><th>Пример</th></tr>
+        <tr><td><b>kk / pp / tt</b></td><td><b>k / p / t</b></td><td>nu<b>kk</b>ua → nu<b>k</b>un; o<b>tt</b>aa → o<b>t</b>an</td></tr>
+        <tr><td><b>k</b></td><td><b>—</b> (выпадает)</td><td>lu<b>k</b>ea → luen; te<b>h</b>dä → teen</td></tr>
+        <tr><td><b>p</b></td><td><b>v</b></td><td>ta<b>v</b>ata (слаб.) → ta<b>p</b>aan (сильн.)</td></tr>
+        <tr><td><b>t</b></td><td><b>d</b></td><td>tie<b>t</b>ää → tie<b>d</b>än</td></tr>
+        <tr><td><b>nt / lt / rt</b></td><td><b>nn / ll / rr</b></td><td>a<b>nt</b>aa → a<b>nn</b>an; ymmä<b>rt</b>ää → ymmä<b>rr</b>än</td></tr>
+      </table>
+    </div>
+    <button type="button" class="btn-primary" style="width:100%; flex:none;" onclick="toggleModal('rulesModal',false)">Закрыть</button>
+  </div>
+</div>
+
+<div class="help-modal" id="helpModal" onclick="if(event.target===this)toggleModal('helpModal',false)">
+  <div class="help-box">
+    <div class="help-head">
+      <h2>Как работать с тренажером</h2>
+      <button type="button" class="help-close" onclick="toggleModal('helpModal',false)">×</button>
+    </div>
+    <div class="help-body">
+      <ul style="margin:0; padding-left:16px; display:flex; flex-direction:column; gap:6px;">
+        <li><b>Типы (1–5):</b> выберите один или несколько типов глаголов. В углу карточки всегда виден тип текущего глагола.</li>
+        <li><b>Режимы:</b><br>
+          — <b>Карточки</b>: знакомство с глаголом, переводом и формами <i>minä</i> / <i>hän</i>;<br>
+          — <b>Тест</b>: выбор правильной формы из 4 похожих вариантов;<br>
+          — <b>Ввод</b>: ручной ввод глагола с клавиатуры (для отрицания вводите только сам глагол после <i>en/et/ei...</i>, например <i>puhu</i>).
+        </li>
+        <li><b>Настройки:</b><br>
+          — <b>Инф → Форма</b> / <b>Форма → Инф</b>: поставить глагол из скобок в нужную форму или угадать инфинитив по готовому предложению;<br>
+          — <b>+ / −</b>: переключает утверждение (<b>+</b>), отрицание (<b>−</b>) или оба варианта вместе (<b>+ / −</b>).
+        </li>
+      </ul>
+    </div>
+    <button type="button" class="btn-primary" style="width:100%; flex:none;" onclick="toggleModal('helpModal',false)">Понятно</button>
+  </div>
+</div>
+<script>
+const verbsDB = [
+  // === ТИП 1 (-a / -ä после гласной) ===
+  { t: 1, inf: "puhua", ru: "говорить", s1: "puhu", v3: "puhuu", v6: "puhuvat", obj: "suomea" },
+  { t: 1, inf: "asua", ru: "жить", s1: "asu", v3: "asuu", v6: "asuvat", obj: "Suomessa" },
+  { t: 1, inf: "ostaa", ru: "покупать", s1: "osta", v3: "ostaa", v6: "ostavat", obj: "ruokaa" },
+  { t: 1, inf: "maksaa", ru: "платить / стоить", s1: "maksa", v3: "maksaa", v6: "maksavat", obj: "laskun" },
+  { t: 1, inf: "katsoa", ru: "смотреть", s1: "katso", v3: "katsoo", v6: "katsovat", obj: "televisiota" },
+  { t: 1, inf: "sanoa", ru: "сказать", s1: "sano", v3: "sanoo", v6: "sanovat", obj: "hei" },
+  { t: 1, inf: "kysyä", ru: "спрашивать", s1: "kysy", v3: "kysyy", v6: "kysyvät", obj: "tietä" },
+  { t: 1, inf: "etsiä", ru: "искать", s1: "etsi", v3: "etsii", v6: "etsivät", obj: "työtä" },
+  { t: 1, inf: "istua", ru: "сидеть", s1: "istu", v3: "istuu", v6: "istuvat", obj: "tuolilla" },
+  { t: 1, inf: "seisoa", ru: "стоять", s1: "seiso", v3: "seisoo", v6: "seisovat", obj: "ulkona" },
+  { t: 1, inf: "lukea", ru: "читать", s1: "lue", v3: "lukee", v6: "lukevat", obj: "kirjaa" },
+  { t: 1, inf: "nukkua", ru: "спать", s1: "nuku", v3: "nukkuu", v6: "nukkuvat", obj: "hyvin" },
+  { t: 1, inf: "ottaa", ru: "брать", s1: "ota", v3: "ottaa", v6: "ottavat", obj: "kahvia" },
+  { t: 1, inf: "kirjoittaa", ru: "писать", s1: "kirjoita", v3: "kirjoittaa", v6: "kirjoittavat", obj: "viestiä" },
+  { t: 1, inf: "soittaa", ru: "звонить / играть", s1: "soita", v3: "soittaa", v6: "soittavat", obj: "ystävälle" },
+  { t: 1, inf: "odottaa", ru: "ждать", s1: "odota", v3: "odottaa", v6: "odottavat", obj: "bussia" },
+  { t: 1, inf: "tietää", ru: "знать", s1: "tiedä", v3: "tietää", v6: "tietävät", obj: "vastauksen" },
+  { t: 1, inf: "antaa", ru: "давать", s1: "anna", v3: "antaa", v6: "antavat", obj: "lahjan" },
+  { t: 1, inf: "ymmärtää", ru: "понимать", s1: "ymmärrä", v3: "ymmärtää", v6: "ymmärtävät", obj: "kaiken" },
+  { t: 1, inf: "lähteä", ru: "отправляться / уходить", s1: "lähde", v3: "lähtee", v6: "lähtevät", obj: "kotiin" },
+
+  // === ТИП 2 (-da / -dä) ===
+  { t: 2, inf: "syödä", ru: "есть (кушать)", s1: "syö", v3: "syö", v6: "syövät", obj: "aamupalaa" },
+  { t: 2, inf: "juoda", ru: "пить", s1: "juo", v3: "juo", v6: "juovat", obj: "vettä" },
+  { t: 2, inf: "saada", ru: "получать / мочь", s1: "saa", v3: "saa", v6: "saavat", obj: "apua" },
+  { t: 2, inf: "voida", ru: "мочь / чувствовать себя", s1: "voi", v3: "voi", v6: "voivat", obj: "hyvin" },
+  { t: 2, inf: "käydä", ru: "посещать / ходить", s1: "käy", v3: "käy", v6: "käyvät", obj: "kaupassa" },
+  { t: 2, inf: "tuoda", ru: "приносить / привозить", s1: "tuo", v3: "tuo", v6: "tuovat", obj: "kahvia" },
+  { t: 2, inf: "viedä", ru: "уносить / отвозить", s1: "vie", v3: "vie", v6: "vievät", obj: "roskat" },
+  { t: 2, inf: "myydä", ru: "продавать", s1: "myy", v3: "myy", v6: "myyvät", obj: "auton" },
+  { t: 2, inf: "tehdä", ru: "делать", s1: "tee", v3: "tekee", v6: "tekevät", obj: "ruokaa" },
+  { t: 2, inf: "nähdä", ru: "видеть", s1: "näe", v3: "näkee", v6: "näkevät", obj: "ystävän" },
+  { t: 2, inf: "uida", ru: "плавать", s1: "ui", v3: "ui", v6: "uivat", obj: "järvessä" },
+  { t: 2, inf: "soida", ru: "звенеть / звучать", s1: "soi", v3: "soi", v6: "soivat", obj: "kovaa" },
+  { t: 2, inf: "imuroida", ru: "пылесосить", s1: "imuroi", v3: "imuroi", v6: "imuroivat", obj: "lattiaa" },
+  { t: 2, inf: "pysäköidä", ru: "парковаться", s1: "pysäköi", v3: "pysäköi", v6: "pysäköivät", obj: "tähän" },
+  { t: 2, inf: "tupakoida", ru: "курить", s1: "tupakoi", v3: "tupakoi", v6: "tupakoivat", obj: "ulkona" },
+  { t: 2, inf: "jäädä", ru: "оставаться", s1: "jää", v3: "jää", v6: "jäävät", obj: "kotiin" },
+  { t: 2, inf: "lyödä", ru: "бить / ударять", s1: "lyö", v3: "lyö", v6: "lyövät", obj: "palloa" },
+  { t: 2, inf: "luennoida", ru: "читать лекцию", s1: "luennoi", v3: "luennoi", v6: "luennoivat", obj: "yliopistolla" },
+  { t: 2, inf: "organisoida", ru: "организовывать", s1: "organisoi", v3: "organisoi", v6: "organisoivat", obj: "juhlat" },
+  { t: 2, inf: "kopioida", ru: "копировать", s1: "kopioi", v3: "kopioi", v6: "kopioivat", obj: "paperin" },
+  // === ТИП 3 (-lla/-llä, -nna/-nnä, -rra/-rrä, -sta/-stä) ===
+  { t: 3, inf: "tulla", ru: "приходить / приезжать", s1: "tule", v3: "tulee", v6: "tulevat", obj: "kotiin" },
+  { t: 3, inf: "mennä", ru: "идти / ехать", s1: "mene", v3: "menee", v6: "menevät", obj: "kouluun" },
+  { t: 3, inf: "olla", ru: "быть", s1: "ole", v3: "on", v6: "ovat", obj: "kotona" },
+  { t: 3, inf: "opiskella", ru: "учиться", s1: "opiskele", v3: "opiskelee", v6: "opiskelevat", obj: "suomea" },
+  { t: 3, inf: "kävellä", ru: "гулять / идти пешком", s1: "kävele", v3: "kävelee", v6: "kävelevat", obj: "puistossa" },
+  { t: 3, inf: "kuunnella", ru: "слушать", s1: "kuuntele", v3: "kuuntelee", v6: "kuuntelevat", obj: "musiikkia" },
+  { t: 3, inf: "katsella", ru: "рассматривать / смотреть", s1: "katsele", v3: "katselee", v6: "katselevat", obj: "kuvia" },
+  { t: 3, inf: "keskustella", ru: "беседовать / обсуждать", s1: "keskustele", v3: "keskustelee", v6: "keskustelevat", obj: "asiasta" },
+  { t: 3, inf: "ajatella", ru: "думать", s1: "ajattele", v3: "ajattelee", v6: "ajattelevat", obj: "sinua" },
+  { t: 3, inf: "esitellä", ru: "представлять / знакомить", s1: "esittele", v3: "esittelee", v6: "esittelevät", obj: "tiimin" },
+  { t: 3, inf: "hymyillä", ru: "улыбаться", s1: "hymyile", v3: "hymyilee", v6: "hymyilevät", obj: "iloisesti" },
+  { t: 3, inf: "pyöräillä", ru: "кататься на велосипеде", s1: "pyöräile", v3: "pyöräilee", v6: "pyöräilevät", obj: "töihin" },
+  { t: 3, inf: "luistella", ru: "кататься на коньках", s1: "luistele", v3: "luistelee", v6: "luistelevat", obj: "talvella" },
+  { t: 3, inf: "pestä", ru: "мыть / стирать", s1: "pese", v3: "pesee", v6: "pesevät", obj: "hampaat" },
+  { t: 3, inf: "nousta", ru: "вставать / подниматься", s1: "nouse", v3: "nousee", v6: "nousevat", obj: "ylös" },
+  { t: 3, inf: "juosta", ru: "бежать / бегать", s1: "juokse", v3: "juoksee", v6: "juoksevat", obj: "nopeasti" },
+  { t: 3, inf: "panna", ru: "класть / ставить", s1: "pane", v3: "panee", v6: "panevat", obj: "kirjan pöydälle" },
+  { t: 3, inf: "purra", ru: "кусать", s1: "pure", v3: "puree", v6: "purevat", obj: "omenan" },
+  { t: 3, inf: "surra", ru: "горевать / печалиться", s1: "sure", v3: "suree", v6: "surevat", obj: "asiaa" },
+  { t: 3, inf: "ommella", ru: "шить", s1: "ompele", v3: "ompelee", v6: "ompelevat", obj: "mekkoa" },
+
+  // === ТИП 4 (-ata/-ätä, -ota/-ötä, -uta/-ytä) ===
+  { t: 4, inf: "haluta", ru: "хотеть", s1: "halua", v3: "haluaa", v6: "haluavat", obj: "kahvia" },
+  { t: 4, inf: "pelata", ru: "играть (в игры)", s1: "pelaa", v3: "pelaa", v6: "pelaavat", obj: "jalkapalloa" },
+  { t: 4, inf: "siivota", ru: "убирать / наводить порядок", s1: "siivoa", v3: "siivoaa", v6: "siivoavat", obj: "kotia" },
+  { t: 4, inf: "herätä", ru: "просыпаться", s1: "herää", v3: "herää", v6: "heräävät", obj: "aikaisin" },
+  { t: 4, inf: "avata", ru: "открывать", s1: "avaa", v3: "avaa", v6: "avaavat", obj: "oven" },
+  { t: 4, inf: "tilata", ru: "заказывать", s1: "tilaa", v3: "tilaa", v6: "tilaavat", obj: "ruokaa" },
+  { t: 4, inf: "vastata", ru: "отвечать", s1: "vastaa", v3: "vastaa", v6: "vastaavat", obj: "puhelimeen" },
+  { t: 4, inf: "osata", ru: "уметь", s1: "osaa", v3: "osaa", v6: "osaavat", obj: "uida" },
+  { t: 4, inf: "tykätä", ru: "нравиться / любить", s1: "tykkää", v3: "tykkää", v6: "tykkäävät", obj: "kahvista" },
+  { t: 4, inf: "tavata", ru: "встречать / встречаться", s1: "tapaa", v3: "tapaa", v6: "tapaavat", obj: "ystäviä" },
+  { t: 4, inf: "levätä", ru: "отдыхать", s1: "lepää", v3: "lepää", v6: "lepäävät", obj: "kotona" },
+  { t: 4, inf: "pakata", ru: "упаковывать / собирать вещи", s1: "pakkaa", v3: "pakkaa", v6: "pakkaavat", obj: "laukun" },
+  { t: 4, inf: "hypätä", ru: "прыгать", s1: "hyppää", v3: "hyppää", v6: "hyppäävät", obj: "korkealle" },
+  { t: 4, inf: "korjata", ru: "ремонтировать / исправлять", s1: "korjaa", v3: "korjaa", v6: "korjaavat", obj: "auton" },
+  { t: 4, inf: "tiskata", ru: "мыть посуду", s1: "tiskaa", v3: "tiskaa", v6: "tiskaavat", obj: "astiat" },
+  { t: 4, inf: "varata", ru: "бронировать", s1: "varaa", v3: "varaa", v6: "varaavat", obj: "hotellin" },
+  { t: 4, inf: "tarjota", ru: "предлагать / угощать", s1: "tarjoa", v3: "tarjoaa", v6: "tarjoavat", obj: "kahvit" },
+  { t: 4, inf: "pudota", ru: "падать", s1: "putoa", v3: "putoaa", v6: "putoavat", obj: "alas" },
+  { t: 4, inf: "kadota", ru: "исчезать / пропадать", s1: "katoa", v3: "katoaa", v6: "katoavat", obj: "nopeasti" },
+  { t: 4, inf: "luvata", ru: "обещать", s1: "lupaa", v3: "lupaa", v6: "lupaavat", obj: "auttaa" },
+
+  // === ТИП 5 (-ita / -itä) ===
+  { t: 5, inf: "tarvita", ru: "нуждаться", s1: "tarvitse", v3: "tarvitsee", v6: "tarvitsevat", obj: "apua" },
+  { t: 5, inf: "valita", ru: "выбирать", s1: "valitse", v3: "valitsee", v6: "valitsevat", obj: "kirjan" },
+  { t: 5, inf: "häiritä", ru: "мешать / беспокоить", s1: "häiritse", v3: "häiritsee", v6: "häiritsevät", obj: "työtä" },
+  { t: 5, inf: "merkitä", ru: "значить / отмечать", s1: "merkitse", v3: "merkitsee", v6: "merkitsevät", obj: "paljon" },
+  { t: 5, inf: "palkita", ru: "награждать", s1: "palkitse", v3: "palkitsee", v6: "palkitsevat", obj: "voittajan" },
+  { t: 5, inf: "tulkita", ru: "толковать / переводить", s1: "tulkitse", v3: "tulkitsee", v6: "tulkitsevat", obj: "tekstin" },
+  { t: 5, inf: "mainita", ru: "упоминать", s1: "mainitse", v3: "mainitsee", v6: "mainitsevat", obj: "nimen" },
+  { t: 5, inf: "harkita", ru: "обдумывать / взвешивать", s1: "harkitse", v3: "harkitsee", v6: "harkitsevat", obj: "asiaa" },
+  { t: 5, inf: "hallita", ru: "владеть / управлять", s1: "hallitse", v3: "hallitsee", v6: "hallitsevat", obj: "kieltä" },
+  { t: 5, inf: "sijaita", ru: "находиться / располагаться", s1: "sijaitse", v3: "sijaitsee", v6: "sijaitsevat", obj: "keskustassa" },
+  { t: 5, inf: "ansaita", ru: "зарабатывать / заслуживать", s1: "ansaitse", v3: "ansaitsee", v6: "ansaitsevat", obj: "rahaa" },
+  { t: 5, inf: "havaita", ru: "замечать / обнаруживать", s1: "havaitse", v3: "havaitsee", v6: "havaitsevat", obj: "virheen" },
+  { t: 5, inf: "ravita", ru: "питать / кормить", s1: "ravitse", v3: "ravitsee", v6: "ravitsevat", obj: "hyvin" },
+  { t: 5, inf: "eritä", ru: "выделяться / отделяться", s1: "eritse", v3: "eritsee", v6: "eritsevät", obj: "helposti" },
+  { t: 5, inf: "lukita", ru: "запирать на замок", s1: "lukitse", v3: "lukitsee", v6: "lukitsevat", obj: "oven" },
+  { t: 5, inf: "huolita", ru: "принимать / хотеть", s1: "huolitse", v3: "huolitsee", v6: "huolitsevat", obj: "apua" },
+  { t: 5, inf: "tuomita", ru: "осуждать / судить", s1: "tuomitse", v3: "tuomitsee", v6: "tuomitsevat", obj: "teon" },
+  { t: 5, inf: "hillitä", ru: "сдерживать", s1: "hillitse", v3: "hillitsee", v6: "hillitsevät", obj: "itsensä" },
+  { t: 5, inf: "lääkitä", ru: "лечить лекарствами", s1: "lääkitse", v3: "lääkitsee", v6: "lääkitsevät", obj: "potilasta" },
+  { t: 5, inf: "villitä", ru: "подстрекать / заводить", s1: "villitse", v3: "villitsee", v6: "villitsevät", obj: "yleisöä" }
+];
+const $ = id => document.getElementById(id);
+const STORAGE_KEY = 'sm_verbs_v1', MUTE_KEY = 'sm_verbs_mute_v1', THEME_KEY = 'sm_verbs_theme_v1';
+let isDark = false, learnedTasks = new Set(), isMuted = false, selectedTypes = new Set();
+let currentMode = 'flashcards', direction = 'inf-to-form', polarity = 'both', roundLimit = 10;
+let pool = [], totalInRound = 0, learnedCount = 0, errorCount = 0, isFlipped = false;
+let sessionMistakes = new Map(), isSpeaking = false, currentAudio = null;
+
+const PERSONS = [
+  { key: 'minä', pron: 'Minä', neg: 'en', end: 'n' },
+  { key: 'sinä', pron: 'Sinä', neg: 'et', end: 't' },
+  { key: 'hän',  pron: 'Hän',  neg: 'ei', end: '3' },
+  { key: 'me',   pron: 'Me',   neg: 'emme', end: 'mme' },
+  { key: 'te',   pron: 'Te',   neg: 'ette', end: 'tte' },
+  { key: 'he',   pron: 'He',   neg: 'eivät', end: '6' }
+];
+
+const svg = (p, c = 'icon') => `<svg class="${c}" viewBox="0 0 24 24">${p}</svg>`;
+const ICONS = {
+  cards: svg('<rect x="3" y="5" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/>'),
+  quiz: svg('<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'),
+  type: svg('<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 16h10M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01"/>'),
+  volOn: svg('<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>'),
+  volOff: svg('<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>'),
+  speak: svg('<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M9 10h.01M12 10h.01M15 10h.01"/>', 'icon-md'),
+  check: svg('<polyline points="20 6 9 17 4 12"/>'),
+  x: svg('<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'),
+  trophy: svg('<circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/>', 'icon-lg')
+};
+
+function loadStorage() {
+  try {
+    learnedTasks = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+    isMuted = localStorage.getItem(MUTE_KEY) === '1';
+    isDark = localStorage.getItem(THEME_KEY) === 'dark';
+  } catch (e) {}
+}
+
+function saveStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...learnedTasks]));
+    localStorage.setItem(MUTE_KEY, isMuted ? '1' : '0');
+    localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+  } catch (e) {}
+}
+
+function applyTheme() {
+  document.body.classList.toggle('dark', isDark);
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) metaTheme.setAttribute('content', isDark ? '#090d16' : '#1e3c72');
+  const btn = $("themeBtn");
+  if (btn) btn.textContent = isDark ? 'Светлая тема' : 'Тёмная тема';
+}
+
+function toggleTheme() { isDark = !isDark; saveStorage(); applyTheme(); }
+
+function clearProgress() {
+  if (!confirm('Сбросить прогресс изучения для выбранных типов глаголов?')) return;
+  const activeVerbs = new Set(verbsDB.filter(v => selectedTypes.has(v.t)).map(v => v.inf));
+  [...learnedTasks].forEach(k => { if (activeVerbs.has(k.split('_')[0])) learnedTasks.delete(k); });
+  saveStorage();
+  resetSession();
+}
+function init() {
+  loadStorage();
+  applyTheme();
+  $("modesBar").innerHTML =
+    `<button class="tab-btn active" onclick="setMode('flashcards', this)">${ICONS.cards} Карточки</button>` +
+    `<button class="tab-btn" onclick="setMode('quiz', this)">${ICONS.quiz} Тест</button>` +
+    `<button class="tab-btn" onclick="setMode('typing', this)">${ICONS.type} Ввод</button>`;
+  updateMuteBtn();
+  selectedTypes.add(1);
+  renderChips();
+  setMode('flashcards', document.querySelector('.tab-btn'));
+}
+
+function toggleMute() { isMuted = !isMuted; saveStorage(); updateMuteBtn(); }
+function updateMuteBtn() {
+  const b = $("muteBtn");
+  b.innerHTML = isMuted ? `${ICONS.volOff} Звук` : `${ICONS.volOn} Звук`;
+  b.classList.toggle('muted', isMuted);
+}
+
+function renderChips() {
+  const types = Array.of(1, 2, 3, 4, 5);
+  $("lessonsContainer").innerHTML = types.map(t =>
+    `<div class="chip ${selectedTypes.has(t) ? 'active' : ''}" onclick="toggleType(${t})">Тип ${t}</div>`
+  ).join('');
+}
+
+function toggleType(t) {
+  if (selectedTypes.has(t)) { if (selectedTypes.size > 1) selectedTypes.delete(t); }
+  else selectedTypes.add(t);
+  renderChips();
+  resetSession();
+}
+
+function selectAll(all) {
+  selectedTypes = all ? new Set(Array.of(1, 2, 3, 4, 5)) : new Set(Array.of(1));
+  renderChips();
+  resetSession();
+}
+
+
+function toggleRoundSize() {
+  roundLimit = roundLimit === 10 ? 20 : roundLimit === 20 ? 0 : 10;
+  $("sizeBtn").textContent = roundLimit ? `${roundLimit} форм` : 'Все формы';
+  resetSession();
+}
+
+function toggleDirection() {
+  direction = direction === 'inf-to-form' ? 'form-to-inf' : 'inf-to-form';
+  $("dirBtn").textContent = direction === 'inf-to-form' ? 'Инф → Форма' : 'Форма → Инф';
+  resetSession();
+}
+
+function togglePolarity() {
+  polarity = polarity === 'both' ? 'pos' : polarity === 'pos' ? 'neg' : 'both';
+  $("polBtn").textContent = polarity === 'both' ? '+ / −' : polarity === 'pos' ? 'Только +' : 'Только −';
+  resetSession();
+}
+
+function setMode(m, btn) {
+  currentMode = m;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const isCards = m === 'flashcards';
+  $("sizeBtn").disabled = isCards; $("sizeBtn").style.opacity = isCards ? '0.45' : '1';
+  $("dirBtn").disabled = isCards;  $("dirBtn").style.opacity = isCards ? '0.45' : '1';
+  $("polBtn").disabled = isCards;  $("polBtn").style.opacity = isCards ? '0.45' : '1';
+  resetSession();
+}
+
+function conjugate(v, p, isNeg) {
+  if (isNeg) return v.s1;
+  if (p.end === '3') return v.v3;
+  if (p.end === '6') return v.v6;
+  return v.s1 + p.end;
+}
+
+function getQuizOptions(task) {
+  const { v, p, isNeg, answer } = task;
+  const set = new Set([answer]);
+
+  if (direction === 'inf-to-form') {
+    PERSONS.forEach(pr => {
+      set.add(conjugate(v, pr, false));
+      set.add(conjugate(v, pr, true));
+    });
+    const raw = v.inf.slice(0, -1);
+    if (!isNeg && p.end !== '3' && p.end !== '6') set.add(raw + p.end);
+    if (isNeg) { set.add(v.v3); set.add(v.s1 + 'n'); set.add(v.inf); }
+    if (p.end === '3') { set.add(v.s1); set.add(v.s1 + v.s1.slice(-1)); }
+  } else {
+    const sameT = verbsDB.filter(x => x.t === v.t && x.inf !== v.inf).sort(() => Math.random() - 0.5);
+    const otherT = verbsDB.filter(x => x.t !== v.t).sort(() => Math.random() - 0.5);
+    [...sameT.slice(0, 2), ...otherT].forEach(x => { if (set.size < 4) set.add(x.inf); });
+  }
+
+  const distractors = [...set].filter(x => x !== answer && x.length > 1).sort(() => Math.random() - 0.5).slice(0, 3);
+  return [answer, ...distractors].sort(() => Math.random() - 0.5);
+}
+function buildTasks() {
+  const active = verbsDB.filter(v => selectedTypes.has(v.t));
+  if (currentMode === 'flashcards') {
+    return active.map(v => ({ key: v.inf + '_card', v }));
+  }
+  const list = [];
+  const modes = polarity === 'both' ? [false, true] : [polarity === 'neg'];
+  active.forEach(v => {
+    PERSONS.forEach(p => {
+      modes.forEach(isNeg => {
+        const form = conjugate(v, p, isNeg);
+        const answer = direction === 'inf-to-form' ? form : v.inf;
+        const fullSentence = isNeg ? `${p.pron} ${p.neg} ${form} ${v.obj}.` : `${p.pron} ${form} ${v.obj}.`;
+        list.push({
+          key: `${v.inf}_${p.key}_${isNeg ? 'neg' : 'pos'}_${direction}`,
+          v, p, isNeg, form, answer, fullSentence
+        });
+      });
+    });
+  });
+  return list;
+}
+
+function resetSession(onlyM = false, all = false) {
+  if (onlyM && sessionMistakes.size > 0) {
+    pool = [...sessionMistakes.values()].sort(() => Math.random() - 0.5);
+  } else {
+    const tasks = buildTasks();
+    const filtered = (all || currentMode === 'flashcards') ? tasks : tasks.filter(t => !learnedTasks.has(t.key));
+    const shuffled = filtered.sort(() => Math.random() - 0.5);
+    const limit = currentMode === 'flashcards' ? 0 : roundLimit;
+    pool = limit ? shuffled.slice(0, limit) : shuffled;
+  }
+  totalInRound = pool.length; learnedCount = 0; errorCount = 0; sessionMistakes.clear(); isFlipped = false;
+  renderCard();
+}
+
+function speak(text, manual = false) {
+  if ((isMuted && !manual) || isSpeaking) return;
+  const btn = $("speakBtn");
+  const reset = () => { isSpeaking = false; if (btn) { btn.disabled = false; btn.innerHTML = ICONS.speak; } };
+  isSpeaking = true;
+  if (btn) btn.disabled = true;
+
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const voices = window.speechSynthesis.getVoices();
+    const fiVoice = voices.find(v => v.lang.toLowerCase().startsWith('fi'));
+    if (fiVoice) { u.voice = fiVoice; u.lang = fiVoice.lang; } else { u.lang = 'fi-FI'; }
+    u.rate = 0.9;
+    u.onend = reset; u.onerror = reset;
+    window.speechSynthesis.speak(u);
+  } else {
+    reset();
+  }
+  setTimeout(() => { if (isSpeaking) reset(); }, 3500);
+}
+
+function clearHint() {
+  const fb = $("typeFeedback");
+  if (fb && !fb.querySelector('.wrong')) fb.innerHTML = '';
+}
+function renderCard() {
+  const activeVerbs = verbsDB.filter(v => selectedTypes.has(v.t));
+  const activeSet = new Set(activeVerbs.map(v => v.inf));
+  const modesCount = polarity === 'both' ? 2 : 1;
+  const totalPossible = activeVerbs.length * 6 * modesCount;
+  const done = [...learnedTasks].filter(k => activeSet.has(k.split('_')[0]) && k.endsWith(direction)).length;
+  $("globalStatText").innerHTML = `Освоено: <b>${done}</b> из <b>${totalPossible}</b>`;
+
+  const statsBar = document.querySelector('.stats');
+  if (currentMode === 'flashcards') {
+    statsBar.style.display = 'none';
+  } else {
+    statsBar.style.display = 'flex';
+    $("progressText").textContent = pool.length ? `Осталось: ${pool.length}` : 'Готово!';
+    $("errorsText").textContent = `Ошибок: ${errorCount}`;
+    $("learnedText").textContent = `В раунде: ${learnedCount} / ${totalInRound}`;
+  }
+
+  $("progressBar").style.width = totalInRound ? `${(learnedCount / totalInRound) * 100}%` : '100%';
+  const area = $("gameArea");
+
+  if (!pool.length) {
+    if (totalInRound === 0) {
+      area.innerHTML =
+        `<div class="word-box"><div style="color:var(--success-text)">${ICONS.trophy}</div>` +
+        `<div class="word-main" style="color:var(--success-text)">Все формы выучены!</div>` +
+        `<div class="word-trans" style="border:none">Неизученных заданий в выбранных типах нет.</div></div>` +
+        `<div class="buttons"><button class="btn-secondary" onclick="resetSession(false, true)">Повторить вразброс</button>` +
+        `<button class="btn-wrong" onclick="clearProgress()">Сбросить прогресс</button></div>`;
+      return;
+    }
+    const mArr = [...sessionMistakes.values()];
+    const mHTML = mArr.length
+      ? `<div class="mistakes-list"><div style="font-weight:700;margin-bottom:4px;">Ошибки (${mArr.length}):</div>` +
+        mArr.map(m => `<div><b>${m.fullSentence}</b> (${m.v.inf} — ${m.v.ru})</div>`).join('') + `</div>`
+      : '';
+    area.innerHTML =
+      `<div class="word-box"><div style="color:var(--success-text)">${ICONS.trophy}</div>` +
+      `<div class="word-main" style="color:var(--success-text)">Hyvää työtä!</div>` +
+      `<div class="word-trans" style="border:none">Раунд завершен!${currentMode === 'flashcards' ? '' : ` Ошибок: <b>${errorCount}</b>`}${mHTML}</div></div>` +
+      `<div class="buttons">${mArr.length ? `<button class="btn-wrong" onclick="resetSession(true)">Повторить ошибки</button>` : ''}` +
+      `<button class="btn-primary" onclick="resetSession(false)">Следующие →</button></div>`;
+    return;
+  }
+
+  const task = pool.at(0), v = task.v;
+  const speakText = currentMode === 'flashcards' ? v.inf : task.fullSentence;
+  const speakBtn = `<button type="button" class="btn-speak" id="speakBtn" onclick="speak('${speakText.replace(/'/g, "\\'")}', true)">${ICONS.speak}</button>`;
+  const umlauts = (currentMode === 'typing')
+    ? `<div class="umlauts"><button type="button" class="umlaut-btn" onclick="addChar('ä')">ä</button><button type="button" class="umlaut-btn" onclick="addChar('ö')">ö</button></div>`
+    : '';
+  const negTag = (currentMode !== 'flashcards' && task.isNeg) ? `<span class="tag tag-neg">Отрицание</span>` : '';
+  const hdr = `<div class="header-row"><div class="tag-group"><span class="tag">Тип ${v.t}</span>${negTag}</div>${umlauts}${speakBtn}</div>`;
+
+  if (currentMode === 'flashcards') {
+    area.innerHTML = hdr +
+      `<div class="word-box fixed-card"><div class="word-main">${v.inf}</div>` +
+      `<div class="word-trans">${isFlipped ? `<b>${v.ru}</b><div class="word-sub">minä <b>${v.s1}n</b> · hän <b>${v.v3}</b> · en <b>${v.s1}</b></div>` : ''}</div></div>` +
+      `<div class="buttons">${!isFlipped
+        ? `<button class="btn-primary" onclick="isFlipped=true;renderCard()">Показать перевод и формы</button>`
+        : `<button class="btn-primary" onclick="nextCard(false, true)">Следующий глагол</button>`}</div>`;
+    if (!isFlipped) speak(v.inf, false);
+    return;
+  }
+
+  const prefix = task.isNeg ? `${task.p.pron} ${task.p.neg}` : task.p.pron;
+  const sentenceHTML = direction === 'inf-to-form'
+    ? `${prefix} <span class="blank-slot">_____</span> (${v.inf}) ${v.obj}.`
+    : `${prefix} <span style="color:var(--primary);text-decoration:underline">${task.form}</span> ${v.obj}.<div class="word-sub">Назовите инфинитив глагола</div>`;
+
+  if (currentMode === 'quiz') {
+    const opts = getQuizOptions(task);
+    area.innerHTML = hdr + `<div class="word-box"><div class="word-main">${sentenceHTML}</div></div>` +
+      `<div class="options-grid">${opts.map(o => `<button class="opt-btn" onclick="checkQuiz(this, '${o}')">${o}</button>`).join('')}</div>` +
+      `<div id="typeFeedback"></div><div class="buttons" id="typeBtns" style="display:none;"></div>`;
+  } else {
+    const ph = direction === 'inf-to-form' ? 'Введите форму глагола...' : 'Введите инфинитив...';
+    area.innerHTML = hdr + `<div class="word-box"><div class="word-main">${sentenceHTML}</div></div>` +
+      `<input type="text" id="typeInput" class="answer-input" placeholder="${ph}" autocomplete="off" autocapitalize="none" spellcheck="false" onkeydown="if(event.key==='Enter')checkTyping()">` +
+      `<div id="typeFeedback"></div><div class="buttons" id="typeBtns">` +
+      `<button class="btn-secondary" onclick="showAns()">Подсказка</button><button class="btn-primary" onclick="checkTyping()">Проверить</button></div>`;
+  }
+}
+
+function nextCard(ok, studyOnly = false) {
+  const c = pool.shift();
+  if (studyOnly) learnedCount++;
+  else if (ok) { learnedCount++; learnedTasks.add(c.key); saveStorage(); }
+  else { errorCount++; sessionMistakes.set(c.key, c); pool.push(c); }
+  isFlipped = false;
+  renderCard();
+}
+
+function checkQuiz(btn, chosen) {
+  document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+  const t = pool.at(0), ok = chosen === t.answer;
+  speak(t.fullSentence, false);
+  const info = `(${t.v.inf} — ${t.v.ru}, Тип ${t.v.t})`;
+  if (ok) {
+    btn.classList.add('correct');
+    $("typeFeedback").innerHTML = `<div class="feedback-box correct"><span class="fb-row">${ICONS.check} Верно! <b>${t.fullSentence}</b> ${info}</span></div>`;
+    $("typeBtns").innerHTML = `<button class="btn-success" onclick="nextCard(true)">Дальше</button>`;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.opt-btn').forEach(b => { if (b.textContent === t.answer) b.classList.add('correct'); });
+    $("typeFeedback").innerHTML = `<div class="feedback-box wrong"><span class="fb-row">${ICONS.x} Правильно: <b>${t.answer}</b> ${info}</span></div>`;
+    $("typeBtns").innerHTML = `<button class="btn-wrong" onclick="nextCard(false)">Дальше</button>`;
+  }
+  $("typeBtns").style.display = 'flex';
+}
+
+function addChar(c) { const i = $("typeInput"); if (i && !i.disabled) { i.value += c; i.focus(); } }
+function showAns() {
+  const wd = pool.at(0).answer;
+  const masked = wd.length <= 2 ? wd : [wd.at(0), ...Array(wd.length - 2).fill('_'), wd.at(-1)].join(' ');
+  $("typeFeedback").innerHTML = `<div class="feedback-box correct" style="letter-spacing:1px"><b>${masked}</b> (${wd.length} букв)</div>`;
+}
+
+function checkTyping() {
+  const inp = $("typeInput");
+  if (!inp || inp.disabled || !inp.value.trim()) return;
+  const val = inp.value.trim().toLowerCase();
+  inp.disabled = true;
+  const t = pool.at(0), info = `(${t.v.inf} — ${t.v.ru}, Тип ${t.v.t})`;
+  speak(t.fullSentence, false);
+  const fullNeg = t.isNeg ? `${t.p.neg} ${t.answer}` : t.answer;
+  const ok = (val === t.answer.toLowerCase()) || (direction === 'inf-to-form' && t.isNeg && val === fullNeg.toLowerCase());
+
+  if (ok) {
+    $("typeFeedback").innerHTML = `<div class="feedback-box correct"><span class="fb-row">${ICONS.check} Верно! <b>${t.fullSentence}</b> ${info}</span></div>`;
+    $("typeBtns").innerHTML = `<button class="btn-success" onclick="nextCard(true)">Дальше</button>`;
+  } else {
+    $("typeFeedback").innerHTML = `<div class="feedback-box wrong"><span class="fb-row">${ICONS.x} Ошибка. Правильно: <b>${t.answer}</b> ${info}</span></div>`;
+    $("typeBtns").innerHTML = `<button class="btn-wrong" onclick="nextCard(false)">Дальше</button>`;
+  }
+}
+
+function toggleModal(id, show) { $(id).classList.toggle("open", show); }
+init();
+</script>
+</body>
+</html>
